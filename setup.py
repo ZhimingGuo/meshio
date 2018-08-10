@@ -33,7 +33,7 @@ setup(
         "all": ["netCDF4", "h5py", "lxml"],
         "exodus": ["netCDF4"],
         "hdf5": ["h5py"],  # MED, MOAB, XDMF formats
-        "xml": ["lxml"],  # Dolfin, VTU, XDMF
+        "xml": ["lxml"],  # Dolfin, VTU, XDMF, SVG
     },
     classifiers=[
         about["__status__"],
@@ -41,7 +41,6 @@ setup(
         "Intended Audience :: Science/Research",
         "Operating System :: OS Independent",
         "Programming Language :: Python",
-        "Programming Language :: Python :: 2",
         "Programming Language :: Python :: 3",
         "Topic :: Scientific/Engineering",
     ],
