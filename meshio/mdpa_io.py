@@ -94,6 +94,17 @@ def read(filename):
         mesh = read_buffer(f)
     return mesh
 
+def _read_physical_names(f, field_data, dimension):
+    line = f.readline().decode("utf-8")
+    # Remove commentaries
+    position_remove = line.find("//")
+    if (position_remove > 0): line = line[0 : position_remove]
+    line.rstrip()
+    physical_name = line.replace("Begin SubModelPart", "")
+    phys_group = 0
+    value = numpy.array([phys_group, dimension], dtype=int)
+    field_data[physical_name] = value
+    return
 
 def _read_nodes(f, is_ascii, data_size):
     # The first line is the number of nodes
@@ -295,6 +306,8 @@ def read_buffer(f):
             points = _read_nodes(f, is_ascii, data_size)
         elif "Begin Elements" in environ or "Begin Conditions" in environ:
             dimension = _read_cells(f, cells, is_ascii, cell_tags, environ)
+        elif "Begin SubModelPart" in environ:
+            _read_physical_names(f, field_data, dimension)
 
     # We finally prepare the cells
     has_additional_tag_data = _prepare_cells(cells, cell_tags)
