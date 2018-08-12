@@ -137,6 +137,7 @@ def _read_cells(f, cells, is_ascii, cell_tags, environ=None):
                 if key in entity_name:
                     t = _mdpa_to_meshio_type[key]
                     break
+        dimension= 3 if (entity_name.find("3D") > 0) else 2
     # Now we compute the number of entities
     pos = f.tell()
     lines = f.readlines()
@@ -178,7 +179,7 @@ def _read_cells(f, cells, is_ascii, cell_tags, environ=None):
     line = f.readline().decode("utf-8")
     assert line.strip() == "End Elements" or line.strip() == "End Conditions"
 
-    return
+    return dimension
 
 
 def _prepare_cells(cells, cell_tags):
@@ -286,10 +287,14 @@ def read_buffer(f):
             break
         environ = line.strip()
 
+        # Default dimension value
+        dimension = 2
+
+        # We read the file
         if "Begin Nodes" in environ:
             points = _read_nodes(f, is_ascii, data_size)
         elif "Begin Elements" in environ or "Begin Conditions" in environ:
-            _read_cells(f, cells, is_ascii, cell_tags, environ)
+            dimension = _read_cells(f, cells, is_ascii, cell_tags, environ)
 
     # We finally prepare the cells
     has_additional_tag_data = _prepare_cells(cells, cell_tags)
