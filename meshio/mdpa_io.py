@@ -89,9 +89,7 @@ local_dimension_types = {
 def read(filename):
     """Reads a KratosMultiphysics mdpa file.
     """
-    # if (have_kratos is True): # TODO: Implement natively
-    # pass
-    # else:
+    # TODO: Implement natively
     with open(filename, "rb") as f:
         mesh = read_buffer(f)
     return mesh
@@ -123,6 +121,10 @@ def _read_cells(f, cells, is_ascii, cell_tags, environ=None):
     # First we try to identify the entity
     t = None
     if environ is not None:
+        # Remove commentaries
+        position_remove = environ.find("//")
+        if (position_remove > 0): environ = environ[0 : position_remove]
+        environ.rstrip()
         if "Begin Elements" in environ:
             entity_name = environ.replace("Begin Elements", "")
             for key in _mdpa_to_meshio_type:
